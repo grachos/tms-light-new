@@ -48,7 +48,7 @@ light-tms/
 │   ├── municipios.sql       DIVIPOLA
 │   ├── maestros.sql         tercero + vehículo
 │   ├── catalogo_configuracion.sql  configuraciones de unidad de carga
-│   └── migracion_v*.sql     migraciones incrementales (v2–v22)
+│   └── migracion_v*.sql     migraciones incrementales (v2–v23)
 ├── .env.example
 └── README.md
 ```
