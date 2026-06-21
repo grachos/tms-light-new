@@ -101,24 +101,28 @@ final class CatalogoRepo
         ]);
     }
 
-    /** @return list<array{codigo:string,nombre:string,tipo:string,codigo_un:string,estado_producto:string}> */
-    public function listarProductos(string $q = '', int $limite = 50): array
+    /**
+     * @return array{items:list<array{codigo:string,nombre:string,tipo:string,codigo_un:string,estado_producto:string}>,total:int}
+     */
+    public function listarProductos(string $q = '', int $pagina = 1, int $porPagina = 10): array
     {
-        if ($q === '') {
-            $stmt = db()->query(
-                "SELECT codigo, nombre, tipo, codigo_un, estado_producto
-                 FROM producto WHERE nombre <> ''
-                 ORDER BY codigo LIMIT " . (int) $limite
-            );
-        } else {
+        $offset = max(0, ($pagina - 1) * $porPagina);
+        $where = "WHERE nombre <> ''";
+        $params = [];
+        if ($q !== '') {
             $like = '%' . $q . '%';
-            $stmt = db()->prepare(
-                "SELECT codigo, nombre, tipo, codigo_un, estado_producto
-                 FROM producto WHERE nombre <> '' AND (nombre LIKE ? OR codigo LIKE ?)
-                 ORDER BY codigo LIMIT " . (int) $limite
-            );
-            $stmt->execute([$like, $like]);
+            $where .= ' AND (nombre LIKE ? OR codigo LIKE ?)';
+            $params = [$like, $like];
         }
-        return $stmt->fetchAll();
+        $stmtCount = db()->prepare("SELECT COUNT(*) FROM producto $where");
+        $stmtCount->execute($params);
+        $total = (int) $stmtCount->fetchColumn();
+        $stmt = db()->prepare(
+            "SELECT codigo, nombre, tipo, codigo_un, estado_producto
+             FROM producto $where
+             ORDER BY codigo LIMIT ? OFFSET ?"
+        );
+        $stmt->execute(array_merge($params, [(int) $porPagina, (int) $offset]));
+        return ['items' => $stmt->fetchAll(), 'total' => $total];
     }
 }

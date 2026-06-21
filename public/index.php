@@ -51,7 +51,11 @@ try {
 
         case 'productos':
             $cat = new CatalogoRepo();
-            $lista = $cat->listarProductos((string) ($_GET['q'] ?? ''));
+            $pagina = max(1, (int) ($_GET['p'] ?? 1));
+            $res = $cat->listarProductos((string) ($_GET['q'] ?? ''), $pagina, 10);
+            $lista = $res['items'];
+            $total = $res['total'];
+            $paginas = (int) ceil($total / 10);
             layout_top('Productos', 'productos');
             require __DIR__ . '/../src/vistas/productos.php';
             layout_bottom();
