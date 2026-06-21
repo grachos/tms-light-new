@@ -86,6 +86,7 @@ $acVehiculo = static function (string $name, string $val): string {
             <label>Responsable pago cargue <?= selOpc('responsable_pago_cargue', $responsables, (string) ($s['responsable_pago_cargue'] ?? 'E')) ?></label>
             <label>Responsable pago descargue <?= selOpc('responsable_pago_descargue', $responsables, (string) ($s['responsable_pago_descargue'] ?? 'E')) ?></label>
             <label>Valor del anticipo <input type="number" step="0.01" name="valor_anticipo" value="<?= $v('valor_anticipo') ?>"></label>
+            <label>NIT EMF (Monitoreo Flota) <input type="text" name="emf" maxlength="20" value="<?= $v('emf') ?>"></label>
         </div>
     </fieldset>
 

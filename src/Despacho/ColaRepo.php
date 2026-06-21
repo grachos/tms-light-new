@@ -300,6 +300,7 @@ final class ColaRepo
             'CODRESPONSABLEPAGODESCARGUE' => $m['responsable_pago_descargue'],
             'TIPOVALORPACTADO'            => $m['tipo_valor_pactado'],
             'MANNROPOLIZA'                => $m['nro_poliza'],
+            'NITMONITOREOFLOTA'           => $m['emf'],
         ];
 
         // Remesas asociadas al manifiesto (bloque anidado).

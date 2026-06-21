@@ -13,18 +13,19 @@ final class EmpresaRepo
     public function obtener(): array
     {
         $fila = db()->query('SELECT * FROM maestro_empresa WHERE id = 1')->fetch();
-        return $fila ?: ['id' => 1, 'tipo_id' => 'N', 'nit' => '', 'razon_social' => '', 'nro_poliza' => '', 'consecutivo_remesa' => 'REM-00000', 'consecutivo_manifiesto' => 'MAN-00000'];
+        return $fila ?: ['id' => 1, 'tipo_id' => 'N', 'nit' => '', 'razon_social' => '', 'nro_poliza' => '', 'emf' => '', 'consecutivo_remesa' => 'REM-00000', 'consecutivo_manifiesto' => 'MAN-00000'];
     }
 
     /** @param array<string,mixed> $datos */
     public function guardar(array $datos): void
     {
         db()->prepare(
-            'INSERT INTO maestro_empresa (id, tipo_id, nit, razon_social, nro_poliza, consecutivo_remesa, consecutivo_manifiesto)
-             VALUES (1, :tipo_id, :nit, :razon_social, :nro_poliza, :consecutivo_remesa, :consecutivo_manifiesto)
+            'INSERT INTO maestro_empresa (id, tipo_id, nit, razon_social, nro_poliza, emf, consecutivo_remesa, consecutivo_manifiesto)
+             VALUES (1, :tipo_id, :nit, :razon_social, :nro_poliza, :emf, :consecutivo_remesa, :consecutivo_manifiesto)
              ON DUPLICATE KEY UPDATE
                 tipo_id = VALUES(tipo_id), nit = VALUES(nit),
                 razon_social = VALUES(razon_social), nro_poliza = VALUES(nro_poliza),
+                emf = VALUES(emf),
                 consecutivo_remesa = VALUES(consecutivo_remesa),
                 consecutivo_manifiesto = VALUES(consecutivo_manifiesto)'
         )->execute([
@@ -32,6 +33,7 @@ final class EmpresaRepo
             'nit'                  => trim((string) ($datos['nit'] ?? '')),
             'razon_social'         => trim((string) ($datos['razon_social'] ?? '')) ?: null,
             'nro_poliza'           => trim((string) ($datos['nro_poliza'] ?? '')) ?: null,
+            'emf'                  => trim((string) ($datos['emf'] ?? '')) ?: null,
             'consecutivo_remesa'   => trim((string) ($datos['consecutivo_remesa'] ?? 'REM-00000')),
             'consecutivo_manifiesto' => trim((string) ($datos['consecutivo_manifiesto'] ?? 'MAN-00000')),
         ]);

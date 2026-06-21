@@ -28,6 +28,7 @@ final class SolicitudRepo
         'horas_pacto_cargue', 'minutos_pacto_cargue',
         'horas_pacto_descargue', 'minutos_pacto_descargue',
         'responsable_pago_cargue', 'responsable_pago_descargue',
+        'emf',
     ];
 
     /**
@@ -245,7 +246,8 @@ final class SolicitudRepo
     /** @param array<string,mixed> $s */
     private function sembrarManifiesto(PDO $pdo, int $solicitudId, array $s): void
     {
-        $poliza = (new EmpresaRepo())->obtener()['nro_poliza'] ?? null;
+        $empresa = (new EmpresaRepo())->obtener();
+        $poliza = $empresa['nro_poliza'] ?? null;
         $manifiesto = [
             'solicitud_id'         => $solicitudId,
             'num_manifiesto'       => $s['consecutivo'] ?? null,
@@ -264,6 +266,7 @@ final class SolicitudRepo
             'municipio_pago_saldo' => $s['municipio_pago_saldo'] ?? null,
             'fecha_pago_saldo'     => $s['fecha_pago_saldo'] ?? null,
             'nro_poliza'           => $poliza,
+            'emf'                  => $s['emf'] ?? $empresa['emf'] ?? null,
             // Datos completados al confirmar el despacho (Fase 4):
             'placa_vehiculo'           => $s['placa_vehiculo'] ?? null,
             'conductor_tipo_id'        => $s['conductor_tipo_id'] ?? null,

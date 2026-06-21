@@ -48,7 +48,7 @@ light-tms/
 │   ├── municipios.sql       DIVIPOLA
 │   ├── maestros.sql         tercero + vehículo
 │   ├── catalogo_configuracion.sql  configuraciones de unidad de carga
-│   └── migracion_v*.sql     migraciones incrementales (v2–v21)
+│   └── migracion_v*.sql     migraciones incrementales (v2–v22)
 ├── .env.example
 └── README.md
 ```
@@ -95,6 +95,7 @@ Los campos llevan en comentarios SQL su variable oficial del RNDC entre `[corche
     | 24 | `migracion_v19_municipios.sql` | Reemplaza datos de municipio con DIVIPOLA actualizado (7845 registros, incluye corregimientos) |
     | 25 | `migracion_v20.sql` | Elimina `valor_anticipo` de solicitud_servicio (se conserva en manifiesto) |
     | 26 | `migracion_v21.sql` | Renombra `cantidad_cargada` → `cantidad_vehiculos` en solicitud_servicio. Soporta multi-despacho con contador decremental. |
+    | 27 | `migracion_v22.sql` | Agrega `emf` (NIT Empresa Monitoreo Flota) a maestro_empresa y manifiesto. |
 
    > La migración v12 reemplaza la tabla `producto` completa. Después de ejecutarla,
    > corre el script `importar_productos_csv.php` para poblar los 3758 productos desde

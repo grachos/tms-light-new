@@ -174,6 +174,7 @@ $__fmtProducto = static function (?string $v) use ($__cat): string {
             'municipio_pago_saldo'  => 'Mun. pago saldo',
             'fecha_pago_saldo'      => 'Fecha pago saldo',
             'nro_poliza'            => 'Nro. póliza',
+            'emf'                   => 'EMF (Monitoreo Flota)',
             'rndc_ingreso_id'       => 'Ingreso RNDC',
         ], [
             'municipio_origen'     => $__fmtMuni,
