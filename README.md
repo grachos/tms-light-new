@@ -48,7 +48,7 @@ light-tms/
 │   ├── municipios.sql       DIVIPOLA
 │   ├── maestros.sql         tercero + vehículo
 │   ├── catalogo_configuracion.sql  configuraciones de unidad de carga
-│   └── migracion_v*.sql     migraciones incrementales (v2–v15)
+│   └── migracion_v*.sql     migraciones incrementales (v2–v19)
 ├── .env.example
 └── README.md
 ```
@@ -70,7 +70,7 @@ Los campos llevan en comentarios SQL su variable oficial del RNDC entre `[corche
    | Orden | Archivo | Descripción |
    |-------|---------|-------------|
    | 1 | `schema.sql` | Tablas base (solicitud, remesa, manifiesto, cola) |
-   | 2 | `municipios.sql` | Catálogo DIVIPOLA |
+    | 2 | `municipios.sql` | Catálogo DIVIPOLA completo: 7845 registros (municipios + corregimientos) |
    | 3 | `maestros.sql` | Tercero y Vehículo |
    | 4 | `catalogos.sql` | Catálogos (empaque, carrocería, producto — estructura, errores RNDC) |
    | 5 | `catalogo_configuracion.sql` | Configuraciones de unidad de carga |
@@ -89,6 +89,10 @@ Los campos llevan en comentarios SQL su variable oficial del RNDC entre `[corche
     | 18 | `migracion_v13.sql` | `dueno_poliza` en solicitud_servicio y remesa |
     | 19 | `migracion_v14.sql` | `conductor_tipo_id`, `conductor_num_id` en vehiculo (conductor por defecto) |
     | 20 | `migracion_v15.sql` | `consecutivo_remesa`, `consecutivo_manifiesto` pasan a VARCHAR, se elimina `radicado_remesa` |
+    | 21 | `migracion_v16.sql` | Renombra `titular_*` → `generador_*` en solicitud_servicio |
+    | 22 | `migracion_v17.sql` | Elimina columnas innecesarias de solicitud_servicio |
+    | 23 | `migracion_v18.sql` | Agrega `peso` a remesa |
+    | 24 | `migracion_v19_municipios.sql` | Reemplaza datos de municipio con DIVIPOLA actualizado (7845 registros, incluye corregimientos) |
 
    > La migración v12 reemplaza la tabla `producto` completa. Después de ejecutarla,
    > corre el script `importar_productos_csv.php` para poblar los 3758 productos desde
