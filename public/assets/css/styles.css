@@ -99,7 +99,7 @@ code {
 
 /* ---- Navegación ---- */
 .barra { justify-content: space-between; }
-.barra__nav { display: flex; gap: 6px; }
+.barra__nav { display: flex; gap: 6px; align-items: center; }
 .barra__nav a {
     color: #dce6f5;
     text-decoration: none;
@@ -109,6 +109,33 @@ code {
 }
 .barra__nav a:hover { background: rgba(255,255,255,.12); }
 .barra__nav a.activo { background: rgba(255,255,255,.22); color: #fff; font-weight: 600; }
+
+/* ---- Dropdown ---- */
+.dropdown { position: relative; }
+.dropdown__toggle {
+    background: none; border: none; color: #dce6f5; cursor: pointer;
+    padding: 6px 12px; border-radius: var(--radio); font-size: 14px; font-family: inherit;
+}
+.dropdown__toggle:hover, .dropdown.activo > .dropdown__toggle { background: rgba(255,255,255,.12); }
+.dropdown__menu {
+    display: none; position: absolute; top: 100%; left: 0; z-index: 100;
+    background: #fff; border: 1px solid var(--gris-borde); border-radius: var(--radio);
+    min-width: 160px; box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+.dropdown__menu a {
+    display: block; color: var(--texto); padding: 8px 14px; border-radius: 0;
+    font-size: 13px;
+}
+.dropdown__menu a:hover { background: var(--gris-fondo); }
+.dropdown:hover .dropdown__menu,
+.dropdown__menu--visible { display: block; }
+
+.btn--nav-alta {
+    background: rgba(255,255,255,.15); color: #fff; text-decoration: none;
+    padding: 6px 14px; border-radius: var(--radio); font-size: 14px; font-weight: 600;
+    margin-left: 8px;
+}
+.btn--nav-alta:hover { background: rgba(255,255,255,.25); }
 
 /* ---- Botones ---- */
 .btn {

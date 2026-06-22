@@ -19,17 +19,16 @@ function ruta(string $r, array $params = []): string
 function layout_top(string $titulo, string $activo = ''): void
 {
     $app = config()['app']['name'];
-    $nav = [
-        'inicio'           => 'Inicio',
-        'solicitudes'      => 'Solicitudes',
-        'despachos'        => 'Despachos',
-        'terceros'         => 'Terceros',
-        'vehiculos'        => 'Vehículos',
-        'productos'        => 'Productos',
-        'cola'             => 'Cola RNDC',
-        'empresa'          => 'Empresa',
-        'solicitud.nueva'  => '+ Nueva solicitud',
+
+    // Determinar qué grupo contiene la página activa para marcar el menú.
+    $grupos = [
+        'operacion' => ['inicio', 'solicitudes', 'solicitud.ver', 'solicitud.editar', 'solicitud.nueva', 'despachos', 'despacho.confirmar', 'despacho.guardar', 'despacho.procesar', 'cola', 'cola.procesar', 'cola.xml'],
+        'maestros'  => ['terceros', 'tercero.nuevo', 'tercero.crear', 'tercero.editar', 'tercero.guardar', 'vehiculos', 'vehiculo.nuevo', 'vehiculo.crear', 'vehiculo.editar', 'vehiculo.guardar', 'productos', 'producto.editar', 'empresa', 'empresa.guardar'],
     ];
+    $grupoActivo = '';
+    foreach ($grupos as $g => $rs) {
+        if (in_array($activo, $rs, true)) { $grupoActivo = $g; break; }
+    }
     ?>
 <!DOCTYPE html>
 <html lang="es-CO">
@@ -44,9 +43,28 @@ function layout_top(string $titulo, string $activo = ''): void
     <header class="barra">
         <div class="barra__marca"><?= e($app) ?></div>
         <nav class="barra__nav">
-            <?php foreach ($nav as $r => $etq): ?>
-                <a href="<?= e(ruta($r)) ?>" class="<?= $activo === $r ? 'activo' : '' ?>"><?= e($etq) ?></a>
-            <?php endforeach; ?>
+            <a href="<?= e(ruta('inicio')) ?>" class="<?= $activo === 'inicio' ? 'activo' : '' ?>">Inicio</a>
+
+            <div class="dropdown <?= $grupoActivo === 'operacion' ? 'activo' : '' ?>">
+                <button class="dropdown__toggle">Operación ▾</button>
+                <div class="dropdown__menu">
+                    <a href="<?= e(ruta('solicitudes')) ?>">Solicitudes</a>
+                    <a href="<?= e(ruta('despachos')) ?>">Despachos</a>
+                    <a href="<?= e(ruta('cola')) ?>">Cola RNDC</a>
+                </div>
+            </div>
+
+            <div class="dropdown <?= $grupoActivo === 'maestros' ? 'activo' : '' ?>">
+                <button class="dropdown__toggle">Maestros ▾</button>
+                <div class="dropdown__menu">
+                    <a href="<?= e(ruta('terceros')) ?>">Terceros</a>
+                    <a href="<?= e(ruta('vehiculos')) ?>">Vehículos</a>
+                    <a href="<?= e(ruta('productos')) ?>">Productos</a>
+                    <a href="<?= e(ruta('empresa')) ?>">Empresa</a>
+                </div>
+            </div>
+
+            <a href="<?= e(ruta('solicitud.nueva')) ?>" class="btn--nav-alta">+ Nueva solicitud</a>
         </nav>
     </header>
     <main class="contenido">
