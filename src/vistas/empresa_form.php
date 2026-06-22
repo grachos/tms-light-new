@@ -35,15 +35,12 @@ $tiposId = ['N' => 'N - NIT', 'C' => 'C - Cédula'];
             </label>
             <label>NIT EMF (Empresa Monitoreo Flota)
                 <input type="text" name="emf" maxlength="20" value="<?= e((string) ($empresa['emf'] ?? '')) ?>">
-                <small>Se envía como <code>&lt;NITMONITOREOFLOTA&gt;</code> en el manifiesto</small>
             </label>
             <label>Últ. consecutivo remesa
                 <input type="text" name="consecutivo_remesa" value="<?= e((string) ($empresa['consecutivo_remesa'] ?? 'REM-00000')) ?>">
-                <small>Se auto-incrementa al confirmar despacho</small>
             </label>
             <label>Últ. consecutivo manifiesto
                 <input type="text" name="consecutivo_manifiesto" value="<?= e((string) ($empresa['consecutivo_manifiesto'] ?? 'MAN-00000')) ?>">
-                <small>Se auto-incrementa al confirmar despacho</small>
             </label>
         </div>
     </fieldset>

@@ -238,6 +238,28 @@
         toggle.addEventListener('click', function () {
             nav.classList.toggle('abierto');
         });
+        // Close nav when clicking outside
+        document.addEventListener('click', function (e) {
+            if (nav.classList.contains('abierto') && !nav.contains(e.target) && !toggle.contains(e.target)) {
+                nav.classList.remove('abierto');
+            }
+        });
+    }
+
+    /* ---------- Mobile Dropdown Toggle (click instead of hover) ---------- */
+    function initMobileDropdowns() {
+        if (window.innerWidth > 640) return;
+        document.querySelectorAll('.dropdown__toggle').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                var dd = this.closest('.dropdown');
+                if (!dd) return;
+                dd.classList.toggle('activo');
+                // Close other dropdowns
+                document.querySelectorAll('.dropdown.activo').forEach(function (other) {
+                    if (other !== dd) other.classList.remove('activo');
+                });
+            });
+        });
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -247,5 +269,6 @@
         initVehiculoConductor();
         initMuniLabels();
         initNavToggle();
+        initMobileDropdowns();
     });
 })();
