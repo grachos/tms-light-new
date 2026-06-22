@@ -345,7 +345,7 @@ final class ColaRepo
 
         $vars = [
             'NUMNITEMPRESATRANSPORTE'  => config()['rndc']['empresa'],
-            'consecutivoRemesa'        => (new EmpresaRepo())->siguienteConsecutivoRemesa(),
+            'consecutivoRemesa'        => str_pad((string)(int) preg_replace('/[^0-9]/', '', $r['num_remesa'] ?? '0'), 10, '0', STR_PAD_LEFT),
             'codOperacionTransporte'   => $r['operacion_transporte'],
             'codTipoEmpaque'           => $r['tipo_empaque'] ?: '0',
             'codNaturalezaCarga'       => $r['naturaleza_carga'],

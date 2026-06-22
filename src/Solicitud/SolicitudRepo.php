@@ -178,21 +178,20 @@ final class SolicitudRepo
             $fila['id'] = $id;
             $pdo->prepare("UPDATE solicitud_servicio SET $sets WHERE id = :id")->execute($fila);
 
-            // 2) Leer solicitud completa y sembrar nueva remesa + manifiesto.
+            // 2) Leer solicitud completa y sembrar nueva remesa + manifiesto
+            //    con los consecutivos de la empresa.
             $stmt = $pdo->prepare('SELECT * FROM solicitud_servicio WHERE id = ?');
             $stmt->execute([$id]);
             $s = $stmt->fetch();
             $s['valor_anticipo'] = $datos['valor_anticipo'] ?? null;
             $s['cantidad_vehiculos'] = $nuevosRestantes;
+            $s['num_remesa'] = (new EmpresaRepo())->siguienteRemesa();
+            $s['num_manifiesto'] = (new EmpresaRepo())->siguienteManifiesto();
 
             $this->sembrarRemesa($pdo, $id, $s);
             $this->sembrarManifiesto($pdo, $id, $s);
 
-            // 3) Auto-incrementar consecutivos de la empresa.
-            (new EmpresaRepo())->siguienteRemesa();
-            (new EmpresaRepo())->siguienteManifiesto();
-
-            // 4) Encolar tercero(11) → vehículo(12) → remesa(3) → manifiesto(4).
+            // 3) Encolar tercero(11) → vehículo(12) → remesa(3) → manifiesto(4).
             (new ColaRepo())->encolar($pdo, $id);
 
             $pdo->commit();
@@ -207,7 +206,7 @@ final class SolicitudRepo
     {
         $remesa = [
             'solicitud_id'         => $solicitudId,
-            'num_remesa'           => $s['consecutivo'] ?? null,
+            'num_remesa'           => $s['num_remesa'] ?? null,
             'operacion_transporte' => $s['operacion_transporte'] ?? null,
             'naturaleza_carga'     => $s['naturaleza_carga'] ?? null,
             'tipo_empaque'         => $s['tipo_empaque'] ?? null,
@@ -247,7 +246,7 @@ final class SolicitudRepo
         $poliza = $empresa['nro_poliza'] ?? null;
         $manifiesto = [
             'solicitud_id'         => $solicitudId,
-            'num_manifiesto'       => $s['consecutivo'] ?? null,
+            'num_manifiesto'       => $s['num_manifiesto'] ?? null,
             'fecha_expedicion'     => $s['fecha_solicitud'] ?? null,
             'operacion_transporte' => $s['operacion_transporte'] ?? null,
             'municipio_origen'     => $s['municipio_origen'] ?? null,

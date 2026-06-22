@@ -159,6 +159,7 @@ $__fmtProducto = static function (?string $v) use ($__cat): string {
             'fecha_cita_cargue'   => static fn ($v, $f) => ($__fmtCita)($v, $f, 'hora_cita_cargue'),
             'fecha_cita_descargue' => static fn ($v, $f) => ($__fmtCita)($v, $f, 'hora_cita_descargue'),
         ]); ?>
+    </section>
 
     <section class="tarjeta">
         <h2>Manifiesto <span class="chip chip--rndc"><?= e($manifiesto['estado_rndc'] ?? '—') ?></span></h2>
