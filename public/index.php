@@ -254,12 +254,17 @@ try {
                 header('Location: ' . ruta('solicitud.nueva'));
                 break;
             }
+            $errPeligrosa = validarProductoPeligrosa($_POST['mercancia_codigo'] ?? '', $_POST['naturaleza_carga'] ?? '');
+            if ($errPeligrosa !== null) {
+                header('Location: ' . ruta('solicitud.nueva', ['err' => $errPeligrosa]));
+                break;
+            }
             $repo = new SolicitudRepo();
             try {
                 $id = $repo->crear($_POST);
                 header('Location: ' . ruta('solicitud.ver', [
                     'id' => $id,
-                    'ok' => 'Solicitud creada. Manifiesto y Remesa generados.',
+                    'ok' => 'Solicitud creada.',
                 ]));
             } catch (Throwable $e) {
                 $msg = config()['app']['debug'] ? $e->getMessage() : 'No se pudo guardar la solicitud.';
@@ -298,6 +303,11 @@ try {
             }
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 header('Location: ' . ruta('solicitud.editar', ['id' => $id]));
+                break;
+            }
+            $errPeligrosa = validarProductoPeligrosa($_POST['mercancia_codigo'] ?? '', $_POST['naturaleza_carga'] ?? '');
+            if ($errPeligrosa !== null) {
+                header('Location: ' . ruta('solicitud.editar', ['id' => $id, 'err' => $errPeligrosa]));
                 break;
             }
             try {

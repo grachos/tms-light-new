@@ -45,7 +45,6 @@ final class SolicitudRepo
         'naturaleza_carga', 'tipo_empaque', 'mercancia_codigo',
         'descripcion_producto', 'cantidad_vehiculos', 'unidad_medida', 'peso',
         'valor_mercancia',
-        'codigo_un', 'estado_producto',
         'valor_flete', 'porcentaje_ica',
         'retencion_ica', 'retencion_fuente', 'fopat',
         'tipo_flete', 'tipo_valor_pactado', 'fecha_pago_saldo',
@@ -204,6 +203,18 @@ final class SolicitudRepo
     /** @param array<string,mixed> $s */
     private function sembrarRemesa(PDO $pdo, int $solicitudId, array $s): int
     {
+        // Heredar codigo_un y estado_producto del producto cuando sea peligrosa.
+        $codigoUn = null;
+        $estadoProducto = null;
+        if (!empty($s['mercancia_codigo'])) {
+            $prod = db()->prepare('SELECT codigo_un, estado_producto FROM producto WHERE codigo = ?');
+            $prod->execute([$s['mercancia_codigo']]);
+            $p = $prod->fetch();
+            if ($p) {
+                $codigoUn = $p['codigo_un'] ?: null;
+                $estadoProducto = $p['estado_producto'] ?: null;
+            }
+        }
         $remesa = [
             'solicitud_id'         => $solicitudId,
             'num_remesa'           => $s['num_remesa'] ?? null,
@@ -233,8 +244,8 @@ final class SolicitudRepo
             'horas_pacto_descargue'  => $s['horas_pacto_descargue'] ?? null,
             'minutos_pacto_descargue' => $s['minutos_pacto_descargue'] ?? null,
             'dueno_poliza'           => $s['dueno_poliza'] ?? 'N',
-            'codigo_un'              => $s['codigo_un'] ?? null,
-            'estado_producto'        => $s['estado_producto'] ?? null,
+            'codigo_un'              => $codigoUn,
+            'estado_producto'        => $estadoProducto,
         ];
         $this->insertar($pdo, 'remesa', $remesa);
         return (int) $pdo->lastInsertId();

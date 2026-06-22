@@ -146,20 +146,6 @@ if (!function_exists('acMunicipioP')) {
                     <?php endif; ?>
                 </div>
             </label>
-            <div id="campos-peligrosa" class="grid<?= ($s['naturaleza_carga'] ?? '1') === '2' ? '' : ' oculto' ?>">
-                <label>Código UN
-                    <input type="text" name="codigo_un" maxlength="5" value="<?= $v('codigo_un') ?>">
-                    <small>Obligatorio si naturaleza = Carga peligrosa</small>
-                </label>
-                <label>Estado del producto
-                    <select name="estado_producto">
-                        <option value="">—</option>
-                        <option value="L"<?= ($s['estado_producto'] ?? '') === 'L' ? ' selected' : '' ?>>Líquido</option>
-                        <option value="S"<?= ($s['estado_producto'] ?? '') === 'S' ? ' selected' : '' ?>>Sólido o semi sólido</option>
-                        <option value="G"<?= ($s['estado_producto'] ?? '') === 'G' ? ' selected' : '' ?>>Gaseoso</option>
-                    </select>
-                </label>
-            </div>
             <label class="ancho-total">Descripción del producto <input type="text" name="descripcion_producto" maxlength="250" value="<?= $v('descripcion_producto') ?>"></label>
             <label>Cantidad vehículos <input type="number" step="1" name="cantidad_vehiculos" value="<?= $v('cantidad_vehiculos') ?>"></label>
             <label>Unidad de medida <?= selOpc('unidad_medida', $unidades, $cur('unidad_medida', '1')) ?></label>
@@ -193,20 +179,6 @@ if (!function_exists('acMunicipioP')) {
 document.addEventListener('DOMContentLoaded', function () {
     var caja = document.querySelector('[data-ac="productos"]');
     var info = document.getElementById('producto-info');
-    var peligrosaGrupo = document.getElementById('campos-peligrosa');
-    var naturaSelect = document.querySelector('[name="naturaleza_carga"]');
-    var codigoUnInput = document.querySelector('[name="codigo_un"]');
-    var estadoProdSelect = document.querySelector('[name="estado_producto"]');
-
-    function togglePeligrosa() {
-        if (peligrosaGrupo && naturaSelect) {
-            peligrosaGrupo.classList.toggle('oculto', naturaSelect.value !== '2');
-        }
-    }
-    togglePeligrosa();
-    if (naturaSelect) {
-        naturaSelect.addEventListener('change', togglePeligrosa);
-    }
 
     if (!caja || !info) { return; }
 
@@ -227,9 +199,6 @@ document.addEventListener('DOMContentLoaded', function () {
         html += ' <span class="prod-detalle">Estado: ' + ({L:'L\u00edquido',S:'S\u00f3lido/semi-s\u00f3lido',G:'Gaseoso'}[p.estado_producto] || '\u2014') + '</span>';
         info.innerHTML = html;
         info.classList.remove('oculto');
-
-        if (codigoUnInput && p.codigo_un) codigoUnInput.value = p.codigo_un;
-        if (estadoProdSelect && p.estado_producto) estadoProdSelect.value = p.estado_producto;
     });
 });
 </script>

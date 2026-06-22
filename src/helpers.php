@@ -29,3 +29,22 @@ function contar_tabla(string $tabla): ?int
         return null;
     }
 }
+
+/**
+ * Valida que un producto de naturaleza peligrosa tenga codigo_un y estado_producto.
+ * Retorna null si es válido, o un mensaje de error si no.
+ */
+function validarProductoPeligrosa(string $codigo, string $naturaleza): ?string
+{
+    if ($naturaleza !== '2' || $codigo === '') {
+        return null;
+    }
+    $prod = (new CatalogoRepo())->productoPorCodigo($codigo);
+    if ($prod === null) {
+        return null;
+    }
+    if (empty($prod['codigo_un']) || empty($prod['estado_producto'])) {
+        return 'El producto es de naturaleza peligrosa pero le falta Código UN y/o Estado del producto. Edítalo en Productos primero.';
+    }
+    return null;
+}
