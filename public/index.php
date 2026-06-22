@@ -425,7 +425,11 @@ try {
             break;
 
         case 'despachos':
-            $despachos = (new ColaRepo())->listarDespachos();
+            $pagina = max(1, (int) ($_GET['p'] ?? 1));
+            $res = (new ColaRepo())->listarDespachosConPaginacion((string) ($_GET['q'] ?? ''), $pagina, 10);
+            $despachos = $res['items'];
+            $total = $res['total'];
+            $paginas = (int) ceil($total / 10);
             layout_top('Despachos', 'despachos');
             require __DIR__ . '/../src/vistas/despachos.php';
             layout_bottom();

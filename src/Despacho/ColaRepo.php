@@ -491,12 +491,39 @@ final class ColaRepo
     {
         return db()->query(
             "SELECT r.id AS remesa_id, r.solicitud_id, s.consecutivo,
-                    r.num_remesa,
+                    r.num_remesa, m.num_manifiesto,
                     r.estado_rndc AS estado_remesa
              FROM remesa r
              JOIN solicitud_servicio s ON s.id = r.solicitud_id
+             LEFT JOIN manifiesto m ON m.remesa_id = r.id
              ORDER BY r.id DESC"
         )->fetchAll();
+    }
+
+    /** @return array{items:list<array<string,mixed>>,total:int} */
+    public function listarDespachosConPaginacion(string $q = '', int $pagina = 1, int $porPagina = 10): array
+    {
+        $from = 'FROM remesa r
+                 JOIN solicitud_servicio s ON s.id = r.solicitud_id
+                 LEFT JOIN manifiesto m ON m.remesa_id = r.id';
+        $where = 'WHERE 1=1';
+        $params = [];
+        if ($q !== '') {
+            $like = '%' . $q . '%';
+            $where .= ' AND (r.num_remesa LIKE ? OR m.num_manifiesto LIKE ?)';
+            $params = [$like, $like];
+        }
+        $countStmt = db()->prepare("SELECT COUNT(*) $from $where");
+        $countStmt->execute($params);
+        $total = (int) $countStmt->fetchColumn();
+
+        $offset = max(0, ($pagina - 1) * $porPagina);
+        $cols = 'r.id AS remesa_id, r.solicitud_id, s.consecutivo,
+                 r.num_remesa, m.num_manifiesto,
+                 r.estado_rndc AS estado_remesa';
+        $stmt = db()->prepare("SELECT $cols $from $where ORDER BY r.id DESC LIMIT ? OFFSET ?");
+        $stmt->execute(array_merge($params, [$porPagina, $offset]));
+        return ['items' => $stmt->fetchAll(), 'total' => $total];
     }
 
     /**
