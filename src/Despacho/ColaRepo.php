@@ -33,20 +33,18 @@ final class ColaRepo
 
     /**
      * Encola los documentos de una solicitud ya despachada.
-     * Borra primero las filas no enviadas de esa solicitud (reintento limpio).
+     * Cada despacho (multi-vehículo) añade su propia remesa+manifiesto
+     * sin afectar los ya encolados de despachos anteriores.
      */
     public function encolar(PDO $pdo, int $solicitudId): void
     {
         $s = $this->fila($pdo, 'SELECT * FROM solicitud_servicio WHERE id = ?', [$solicitudId]);
-        $remesa = $this->fila($pdo, 'SELECT * FROM remesa WHERE solicitud_id = ?', [$solicitudId]);
-        $manif  = $this->fila($pdo, 'SELECT * FROM manifiesto WHERE solicitud_id = ?', [$solicitudId]);
+        // Obtener la ÚLTIMA remesa y manifiesto creados para este despacho.
+        $remesa = $this->fila($pdo, 'SELECT * FROM remesa WHERE solicitud_id = ? ORDER BY id DESC LIMIT 1', [$solicitudId]);
+        $manif  = $this->fila($pdo, 'SELECT * FROM manifiesto WHERE solicitud_id = ? ORDER BY id DESC LIMIT 1', [$solicitudId]);
         if ($s === null || $remesa === null || $manif === null) {
             throw new RuntimeException('No se puede encolar: faltan remesa o manifiesto.');
         }
-
-        // Reintento limpio: descarta lo que aún no se envió.
-        $pdo->prepare("DELETE FROM cola_envios WHERE solicitud_id = ? AND estado IN ('pendiente','enviando','error')")
-            ->execute([$solicitudId]);
 
         $maxIntentos = (int) config()['cola']['max_intentos'];
 

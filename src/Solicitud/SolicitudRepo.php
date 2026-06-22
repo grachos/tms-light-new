@@ -220,7 +220,7 @@ final class SolicitudRepo
             'tipo_empaque'         => $s['tipo_empaque'] ?? null,
             'mercancia_codigo'     => $s['mercancia_codigo'] ?? null,
             'descripcion_producto' => $s['descripcion_producto'] ?? null,
-            'cantidad_cargada'     => $s['cantidad_vehiculos'] ?? 1,
+            'cantidad_cargada'     => 1, // 1 vehículo por despacho
             'unidad_medida'        => $s['unidad_medida'] ?? null,
             'peso'                 => $s['peso'] ?? null,
             'remitente_tipo_id'    => $s['remitente_tipo_id'] ?? null,
