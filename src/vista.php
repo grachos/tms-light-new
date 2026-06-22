@@ -36,6 +36,7 @@ function layout_top(string $titulo, string $activo = ''): void
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($titulo) ?> · <?= e($app) ?></title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="assets/css/styles.css">
     <script defer src="assets/js/app.js"></script>
 </head>
