@@ -314,6 +314,37 @@ final class ColaRepo
         if ($row['tipo_documento'] === 'manifiesto') {
             db()->prepare("UPDATE solicitud_servicio SET estado = 'despachada' WHERE id = ?")
                 ->execute([(int) $row['solicitud_id']]);
+            $this->consultarSeguridadQr((int) $row['referencia_id']);
+        }
+    }
+
+    /** Consulta el código de seguridad QR del manifiesto ante el RNDC. */
+    private function consultarSeguridadQr(int $manifiestoId): void
+    {
+        try {
+            $manif = $this->fila(db(), 'SELECT num_manifiesto FROM manifiesto WHERE id = ?', [$manifiestoId]);
+            if (!$manif || empty($manif['num_manifiesto'])) {
+                return;
+            }
+            $rndc    = RndcClient::desdeConfig();
+            $empresa = (string) (config()['rndc']['empresa'] ?? '');
+            if ($empresa === '') {
+                return;
+            }
+            $qrResp = $rndc->consultar(
+                4,
+                ['INGRESOID', 'FECHAING', 'OBSERVACIONES', 'SEGURIDADOR'],
+                [
+                    'NUMNITEMPRESATRANSPORTE' => "'" . $empresa . "'",
+                    'NUMMANIFIESTOCARGA'      => "'" . $manif['num_manifiesto'] . "'",
+                ],
+            );
+            if ($qrResp->ok && !empty($qrResp->datos[0]['seguridadqr'])) {
+                db()->prepare('UPDATE manifiesto SET seguridadqr = ? WHERE id = ?')
+                    ->execute([$qrResp->datos[0]['seguridadqr'], $manifiestoId]);
+            }
+        } catch (\Throwable $e) {
+            error_log('Error al consultar seguridadqr: ' . $e->getMessage());
         }
     }
 

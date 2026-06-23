@@ -73,7 +73,7 @@ if ($autorizacionNum) {
     $condQr    = $m['conductor_num_id'] ?? '';
     $empresaQr = mb_substr($e['razon_social'] ?? '', 0, 30);
     $obsQr     = mb_substr($s['observaciones'] ?? '', 0, 120);
-    $seguroQr  = ''; // TODO: obtener desde servicio web RNDC
+    $seguroQr  = $m['seguridadqr'] ?? '';
 
     $qrText = "MEC:" . $mec . "\r\n";
     $qrText .= "Fecha:" . $fechaQr . "\r\n";
